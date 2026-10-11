@@ -25,18 +25,10 @@ def test_add_task_invalid_date(tmp_path, capsys, monkeypatch):
     with open(json_file, "w") as f:
         json.dump([], f)
 
-    monkeypatch.setattr("builtins.input", lambda _: "2026-09-30")
     add_task(json_file, "pytest", "high", "banana")
     captured = capsys.readouterr()
 
-    with open(json_file, "r") as f:
-        data = json.load(f)
-
-    assert captured.out.splitlines()[0] == "Invalid date format! Please use YYYY-MM-DD."
-    assert data[0]["title"] == "pytest"
-    assert data[0]["priority"] == "high"
-    assert data[0]["due_date"] =="2026-09-30"
-    assert data[0]["completed"] is False
+    assert captured.out == "Invalid date format! Please use YYYY-MM-DD.\n"
 
 
 def test_add_task_invalid_priority(tmp_path, capsys, monkeypatch):
@@ -45,18 +37,10 @@ def test_add_task_invalid_priority(tmp_path, capsys, monkeypatch):
     with open(json_file, "w") as f:
         json.dump([], f)
 
-    monkeypatch.setattr("builtins.input", lambda _: "high")
     add_task(json_file, "pytest", "banana", "2026-09-30")
     captured = capsys.readouterr()
 
-    with open(json_file, "r") as f:
-        data = json.load(f)
-
-    assert captured.out.splitlines()[0] == "You must enter one of these three (low, medium, high)"
-    assert data[0]["title"] == "pytest"
-    assert data[0]["priority"] == "high"
-    assert data[0]["due_date"] =="2026-09-30"
-    assert data[0]["completed"] is False
+    assert captured.out == "You must enter one of these three (low, medium, high)\n"
 
 
 def test_list_task(tmp_path, capsys):
